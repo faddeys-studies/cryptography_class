@@ -14,11 +14,11 @@ def main():
     msg_name = sys.argv[1]
     message = " ".join(sys.argv[2:])
 
-    private_key = rsa_lib.load_private_key("private.key.txt")
-    public_key = rsa_lib.load_public_key("public.key.txt")
+    private_key = rsa_lib.load_private_key("lab1task1/private.key.txt")
+    public_key = rsa_lib.load_public_key("lab1task1/public.key.txt")
     cipher = rsa_lib.encrypt(message.encode("utf-8"), public_key, private_key)
 
-    with open(msg_name + ".message.txt", "wb") as f:
+    with open("lab1task1/" + msg_name + ".message.txt", "wb") as f:
         f.write(base64.b64encode(cipher) + b"\n" + message.encode("utf-8"))
 
 

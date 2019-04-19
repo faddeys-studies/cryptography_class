@@ -4,10 +4,10 @@ import base64
 
 
 def main():
-    public_key = rsa_lib.load_public_key("public.key.txt")
-    for filename in os.listdir("."):
+    public_key = rsa_lib.load_public_key("lab1task1/public.key.txt")
+    for filename in os.listdir("lab1task1"):
         if filename.endswith(".message.txt"):
-            with open(filename, "rb") as f:
+            with open("lab1task1/" + filename, "rb") as f:
                 contents_bytes = f.read()
             signature, _, contents_bytes = contents_bytes.partition(b"\n")
             signature_bytes = base64.b64decode(signature)

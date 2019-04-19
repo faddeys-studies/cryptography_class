@@ -20,7 +20,7 @@ def main():
         exit(1)
     msg_name = sys.argv[1]
 
-    pub_n, pub_e = public_key = rsa_lib.load_public_key("public.key.txt")
+    pub_n, pub_e = public_key = rsa_lib.load_public_key("lab1task1/public.key.txt")
 
     block_size = pub_n.bit_length() // 8
 
@@ -33,7 +33,7 @@ def main():
 
     text = rsa_lib.decrypt(cipher, public_key)
 
-    with open(msg_name + ".message.txt", "wb") as f:
+    with open("lab1task1/" + msg_name + ".message.txt", "wb") as f:
         f.write(base64.b64encode(cipher) + b"\n" + text)
 
 
