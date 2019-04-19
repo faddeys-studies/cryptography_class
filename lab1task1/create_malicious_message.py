@@ -2,13 +2,14 @@ import sys
 import base64
 import random
 from lab1task1 import rsa_lib
+import crypto_lib
 
 
 def _generate_valid_block(n, e, block_size):
     target_bitlen = 8 * block_size
     while True:
         c = random.choice(range(n))
-        b = rsa_lib._fastmul(c, e, n)
+        b = crypto_lib.fastmul(c, e, n)
         if b.bit_length() <= target_bitlen:
             return c
 
@@ -29,7 +30,7 @@ def main():
         _generate_valid_block(pub_n, pub_e, block_size)
         for _ in range(50)
     ]
-    cipher = b"".join(rsa_lib._blocks_to_bytes_chunks(cipher_blocks, block_size + 1))
+    cipher = b"".join(crypto_lib.blocks_to_bytes_chunks(cipher_blocks, block_size + 1))
 
     text = rsa_lib.decrypt(cipher, public_key)
 
