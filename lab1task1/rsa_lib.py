@@ -1,48 +1,13 @@
 import random
-import os
+import primes
 
 
-DEFAULT_PRIMES_TXT_PATH = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "primes.txt"
-)
-
-
-class RandomPrimeNumberGenerator:
-    def __init__(self, primes):
-        self.primes = primes
-
-    @classmethod
-    def load_from_file(cls, primes_txt_path):
-        with open(primes_txt_path) as f:
-            primes = list(map(int, f.readlines()))
-        return cls(primes)
-
-    def __call__(self, minimum=None, maximum=None):
-        primes = self.primes
-        if minimum is None:
-            l = 0
-        else:
-            l = _bin_search(primes, minimum)
-        if maximum is None:
-            r = len(primes)
-        else:
-            r = _bin_search(primes, maximum)
-        return primes[random.randrange(l, r)]
-
-
-_default_prime_numbers_generator = RandomPrimeNumberGenerator.load_from_file(
-    DEFAULT_PRIMES_TXT_PATH
-)
-
-
-def make_keypair(get_random_prime=None):
-    if get_random_prime is None:
-        get_random_prime = _default_prime_numbers_generator
-    p = get_random_prime()
-    q = get_random_prime()
+def make_keypair():
+    p = primes.get_random_prime()
+    q = primes.get_random_prime()
     n = p * q
     m = (p - 1) * (q - 1)
-    e = get_random_prime(maximum=m)
+    e = primes.get_random_prime(maximum=m)
     assert e <= m - 1
     d, _ = _solve_diophantine(e, m)
     if d < 0:
@@ -131,27 +96,6 @@ def _solve_diophantine(a, b):
     return x, y
 
 
-def _bin_search(array, value):
-    """
-    Returns index of first item no less than given value.
-    It is assumed that array items are unique and sorted in ascending order.
-    """
-    l, r = 0, len(array)
-    m = l
-    while l < r:
-        m = (l + r) // 2
-        m_val = array[m]
-        if m_val == value:
-            return m
-        if m_val > value:
-            r = m
-        else:
-            l = m + 1
-    if array[m] < value:
-        m += 1
-    return m
-
-
 if __name__ == "__main__":
 
     def _test_fastmul():
@@ -165,40 +109,12 @@ if __name__ == "__main__":
 
     _test_fastmul()
 
-    def _test_binsearch():
-        for _ in range(1000):
-            arr = sorted(random.sample(range(1000), 500))
-            x = random.randint(-100, 1100)
-            i = _bin_search(arr, x)
-            msg = (x, i, arr[i - 1 : i + 2])
-            assert 0 <= i <= len(arr), msg
-            if i < len(arr):
-                assert x <= arr[i], msg
-            if i > 0:
-                assert x > arr[i - 1], msg
-
-    _test_binsearch()
-
     def _test_encrypt_decrypt():
         private_key, public_key = make_keypair()
         for _ in range(1000):
             message = bytes(random.choices(range(256), k=1000))
             cipher = encrypt(message, public_key, private_key)
             deciphered = decrypt(cipher, public_key)
-            # if message != deciphered:
-            #     cipher = encrypt(message, public_key, private_key)
-            #     deciphered = decrypt(cipher, public_key)
             assert message == deciphered, (message, deciphered)
 
     _test_encrypt_decrypt()
-
-"""
-from lab1task1.rsa_lib import *
-private_key, public_key = make_keypair()
-while True:
-    message = bytes(random.choices(range(256), k=1000))
-    cipher = encrypt(message, public_key, private_key)
-    deciphered = decrypt(cipher, public_key)
-    if message != deciphered:
-        break
-"""
