@@ -10,13 +10,15 @@ def main():
             with open(filename, "rb") as f:
                 contents_bytes = f.read()
             signature, _, contents_bytes = contents_bytes.partition(b"\n")
-            contents = contents_bytes.decode("utf-8")
             signature_bytes = base64.b64decode(signature)
 
             sig_decrypt = rsa_lib.decrypt(signature_bytes, public_key)
-            sig_decrypt = sig_decrypt.decode("utf-8")
-            valid = sig_decrypt == contents
+            valid = sig_decrypt == contents_bytes
 
+            try:
+                contents = contents_bytes.decode("utf-8")
+            except:
+                contents = contents_bytes
             print()
             print("File:", filename)
             print("Contents:", contents)
