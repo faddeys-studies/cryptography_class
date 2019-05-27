@@ -12,7 +12,7 @@ def blocks_to_bytes_chunks(blocks, block_size):
     return [b.to_bytes(block_size, byteorder="little") for b in blocks]
 
 
-def fastmul(x, d, mod):
+def fastpow(x, d, mod):
     r = 1
     p = x
     mask = 1
@@ -38,6 +38,10 @@ def solve_diophantine(a, b):
     return x, y
 
 
+def inverse_in_group(a, n):
+    return solve_diophantine(a, n)[0]
+
+
 def gcd(a, b):
     if a < b:
         a, b = b, a
@@ -53,7 +57,7 @@ if __name__ == "__main__":
             x = random.randint(1, 1000)
             d = random.randint(1, 1000)
             mod = random.randint(11, 1009)
-            actual = fastmul(x, d, mod)
+            actual = fastpow(x, d, mod)
             expected = (x ** d) % mod
             assert actual == expected, (x, d, mod, actual, expected)
 

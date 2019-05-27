@@ -46,7 +46,7 @@ def encrypt(message: bytes, pubkey, private_key) -> bytes:
     block_size = n.bit_length() // 8
     header = len(message).to_bytes(block_size, "little")
     blocks = crypto_lib.message_to_blocks(header + message, block_size)
-    ciphered_blocks = [crypto_lib.fastmul(b, d, n) for b in blocks]
+    ciphered_blocks = [crypto_lib.fastpow(b, d, n) for b in blocks]
     return b"".join(crypto_lib.blocks_to_bytes_chunks(ciphered_blocks, block_size + 1))
 
 
@@ -54,7 +54,7 @@ def decrypt(cipher: bytes, pubkey) -> bytes:
     n, e = pubkey
     block_size = n.bit_length() // 8
     ciphered_blocks = crypto_lib.message_to_blocks(cipher, block_size + 1)
-    blocks = [crypto_lib.fastmul(b, e, n) for b in ciphered_blocks]
+    blocks = [crypto_lib.fastpow(b, e, n) for b in ciphered_blocks]
     message = b"".join(crypto_lib.blocks_to_bytes_chunks(blocks, block_size))
     length = int.from_bytes(message[:block_size], "little")
     return message[block_size : block_size + length]

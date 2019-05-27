@@ -24,5 +24,6 @@ def main():
     print(f"verifying: g^t(mod p) = {gt} (mod {p}) = {gt % p}")
     print("signature", "OK" if ok else "invalid!")
 
+
 if __name__ == '__main__':
     main()

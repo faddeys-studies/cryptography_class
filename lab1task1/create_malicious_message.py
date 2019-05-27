@@ -9,7 +9,7 @@ def _generate_valid_block(n, e, block_size):
     target_bitlen = 8 * block_size
     while True:
         c = random.choice(range(n))
-        b = crypto_lib.fastmul(c, e, n)
+        b = crypto_lib.fastpow(c, e, n)
         if b.bit_length() <= target_bitlen:
             return c
 
